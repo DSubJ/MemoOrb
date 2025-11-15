@@ -18,9 +18,9 @@
       </div>
     {:else}
       <div class="orb-content">
-        <p class="label">Heute</p>
-        <h1>Keine Erinnerung hinterlegt</h1>
-        <p class="description">Schick eine warme Nachricht oder füge ein Foto hinzu, damit dieser Tag leuchtet.</p>
+        <p class="label">Today</p>
+        <h1>No memory yet</h1>
+        <p class="description">Send a warm note or add a photo so this day can glow.</p>
       </div>
     {/if}
   </div>
