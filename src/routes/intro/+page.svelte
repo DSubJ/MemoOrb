@@ -1,22 +1,21 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition';
-  import { onMount } from 'svelte';
+  import { fade } from "svelte/transition";
+  import { onMount } from "svelte";
 
   const slides = [
-    'Hi Brenton and Douglas,',
-    'I built this little web app to let you know whenever a memory of our time together pops into my ADHD brain.',
-    'The memories are shown here as orbs and arranged in chronological order.'
+    "Hi Brenton and Douglas,",
+    "I built this little web app to let you know whenever a memory of our time together pops into my ADHD brain.",
+    "The memories are shown here as orbs and arranged in chronological order.",
   ];
-  const displayDurations = [3000, 15000, 3000];
 
   let index = 0;
   let show = true;
   let finished = false;
+  const displayMs = 3000; // visible time before fade
   const fadeMs = 2000; // fade-out duration
 
   onMount(() => {
     const cycle = () => {
-      const visibleFor = displayDurations[index] ?? 3000;
       setTimeout(() => {
         show = false;
         setTimeout(() => {
@@ -28,7 +27,7 @@
             finished = true;
           }
         }, fadeMs);
-      }, visibleFor);
+      }, displayMs);
     };
     cycle();
   });
@@ -37,12 +36,14 @@
 <section class="hero">
   <div class="copy">
     {#if show}
-      <p class="message" transition:fade={{ duration: fadeMs }}>{slides[index]}</p>
+      <p class="message" transition:fade={{ duration: fadeMs }}>
+        {slides[index]}
+      </p>
     {/if}
 
     {#if finished}
       <div class="cta" transition:fade={{ duration: fadeMs }}>
-        <a class="button" href="/">Enter orbit</a>
+        <a class="button" href="/">Enter</a>
       </div>
     {/if}
   </div>
