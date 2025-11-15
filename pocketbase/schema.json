@@ -1,0 +1,50 @@
+{
+  "collections": [
+    {
+      "name": "users",
+      "type": "auth",
+      "schema": [
+        {
+          "name": "email",
+          "type": "email",
+          "required": true,
+          "system": true
+        },
+        {
+          "name": "password",
+          "type": "password",
+          "required": true,
+          "system": true
+        },
+        {
+          "name": "role",
+          "type": "select",
+          "options": {
+            "values": ["admin", "viewer"],
+            "maxSelect": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "thoughts",
+      "type": "base",
+      "schema": [
+        { "name": "date", "type": "date", "required": true },
+        { "name": "title", "type": "text", "required": true, "options": { "max": 120 } },
+        { "name": "description", "type": "text", "required": false },
+        { "name": "mood", "type": "text", "required": false, "options": { "max": 40 } },
+        { "name": "image", "type": "file", "required": false, "options": { "maxSelect": 1, "maxSize": 5000000 } }
+      ],
+      "indexes": ["create index if not exists idx_thoughts_date on thoughts (date);"]
+    },
+    {
+      "name": "settings",
+      "type": "base",
+      "schema": [
+        { "name": "timeZoneOwner", "type": "text", "required": false },
+        { "name": "timeZoneFriend", "type": "text", "required": false }
+      ]
+    }
+  ]
+}

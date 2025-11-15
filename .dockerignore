@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log
+svelte-kit
+.svelte-kit
+build
+.output
+.env
+.DS_Store
+pocketbase/pb_data
