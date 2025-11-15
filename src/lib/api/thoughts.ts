@@ -1,28 +1,43 @@
 import { pocketbase, type ThoughtRecord, type SettingsRecord, fileUrl } from '$lib/pocketbase';
 import type { Thought, Settings } from '$lib/types';
+import { mockThoughts } from '$lib/mock/thoughts';
+import { mockSettings } from '$lib/mock/settings';
 
 export async function fetchThoughtForDate(date: string): Promise<Thought | null> {
   try {
     const record = await pocketbase.collection('thoughts').getFirstListItem(`date = "${date}"`);
     return mapThought(record as ThoughtRecord);
   } catch (error) {
-    return null;
+    // fallback to mock data when backend unavailable
+    const fallback = mockThoughts.find((t) => t.date === date);
+    return fallback ?? null;
   }
 }
 
 export async function fetchMemories(limit = 6): Promise<Thought[]> {
-  const list = await pocketbase.collection('thoughts').getList<ThoughtRecord>(1, limit, {
-    filter: 'image != null',
-    sort: '-date'
-  });
-  return list?.items?.map(mapThought) ?? [];
+  try {
+    const list = await pocketbase.collection('thoughts').getList<ThoughtRecord>(1, limit, {
+      filter: 'image != null',
+      sort: '-date'
+    });
+    return list?.items?.map(mapThought) ?? [];
+  } catch (error) {
+    return mockThoughts
+      .filter((t) => t.imageUrl)
+      .sort((a, b) => (a.date < b.date ? 1 : -1))
+      .slice(0, limit);
+  }
 }
 
 export async function fetchAllThoughts(): Promise<Thought[]> {
-  const list = await pocketbase.collection('thoughts').getFullList<ThoughtRecord>({
-    sort: '-date'
-  });
-  return list.map(mapThought);
+  try {
+    const list = await pocketbase.collection('thoughts').getFullList<ThoughtRecord>({
+      sort: '-date'
+    });
+    return list.map(mapThought);
+  } catch (error) {
+    return [...mockThoughts].sort((a, b) => (a.date < b.date ? 1 : -1));
+  }
 }
 
 export async function upsertThought(payload: Partial<ThoughtRecord> & { id?: string }, image?: File | null) {
@@ -48,7 +63,7 @@ export async function fetchSettings(): Promise<Settings | null> {
     const record = await pocketbase.collection('settings').getFirstListItem('', { requestKey: 'settings' });
     return mapSettings(record as SettingsRecord);
   } catch (error) {
-    return null;
+    return mockSettings;
   }
 }
 
