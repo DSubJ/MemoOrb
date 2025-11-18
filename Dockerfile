@@ -6,6 +6,7 @@ RUN npm ci
 COPY . .
 ARG VITE_PB_URL=http://localhost:8090
 ENV VITE_PB_URL=${VITE_PB_URL}
+RUN npx svelte-kit sync
 RUN npm run build
 
 # Production runtime
