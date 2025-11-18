@@ -1,13 +1,22 @@
 # Frontend build
 FROM node:20-alpine AS build
 WORKDIR /app
+
+# Install dependencies
 COPY package*.json ./
 RUN npm ci
+
+# Copy source files
 COPY . .
+
+# Set build args
 ARG VITE_PB_URL=http://localhost:8090
 ENV VITE_PB_URL=${VITE_PB_URL}
-RUN npx svelte-kit sync
-RUN npm run build
+
+# Generate SvelteKit types and build
+RUN npx svelte-kit sync && \
+    npm run build && \
+    ls -la build/
 
 # Production runtime
 FROM node:20-alpine
